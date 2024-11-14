@@ -1,32 +1,57 @@
 from libs import *
 
-# Restrições
-# Restrição 1: Cada equipe deve estar em uma base
-for j in range(m):
-    problema += pulp.lpSum(y[(j, k)] for k in range(s)) == 1
+def restricao_cobertura_grupo(solution):
+    #Restrição: Cada grupo deve ter exatamente uma base associada.
+    
+    y = solution['y']
+    return np.all(np.sum(y, axis=0) == 1)
 
-# Restrição 2: Cada ativo deve ser atribuído a uma base
-for i in range(n):
-    problema += pulp.lpSum(x[(i, j)] for j in range(m)) == 1
+def restricao_atribuicao_unica(solution):
+    #Restrição: Cada ativo deve ser monitorado por exatamente uma base.
+    
+    x = solution['x']
+    return np.all(np.sum(x, axis=1) == 1)
 
-# Restrição 3: Ativo só pode ser atribuído a uma base com equipe
-for i in range(n):
-    for j in range(m):
-        problema += x[(i, j)] <= pulp.lpSum(y[(j, k)] for k in range(s))
+def restricao_compatibilidade(solution):
+    #Restrição: Um ativo só pode ser monitorado por uma base se esta base pertence a uma equipe.
+    
+    x = solution['x']
+    y = solution['y']
+    num_ativos, num_bases = x.shape
+    num_bases, num_equipes = y.shape
 
-# Restrição 4: Cada ativo mantido por uma equipe
-for i in range(n):
-    problema += pulp.lpSum(h[(i, k)] for k in range(s)) == 1
+    for i in range(num_ativos):
+        for j in range(num_bases):
+            for k in range(num_equipes):
+                if x[i, j] > y[j, k]:
+                    return False
+    return True
 
-# Restrição 5: Ativo só pode ser mantido se a equipe estiver na base do ativo
-for i in range(n):
-    for j in range(m):
-        for k in range(s):
-            problema += z[(i, j, k)] <= x[(i, j)]
-            problema += z[(i, j, k)] <= y[(j, k)]
-            problema += z[(i, j, k)] >= x[(i, j)] + y[(j, k)] - 1
-            problema += h[(i, k)] <= pulp.lpSum(z[(i, j, k)] for j in range(m))
+def restricao_monitoramento(solution):
+    #Restrição: Cada ativo deve estar associado a exatamente uma equipe.
+    
+    h = solution['h']
+    return np.all(np.sum(h, axis=1) == 1)
 
-# Restrição 6: Cada equipe deve manter no mínimo uma quantidade de ativos
-for k in range(s):
-    problema += pulp.lpSum(h[(i, k)] for i in range(n)) >= eta * (n / s)
+def restricao_hik(solution):
+    #Restrição: h_ik ≤ (x_ij + y_jk) / 2, ∀i ∈ {1, ..., n}, ∀j ∈ {1, ..., m}, ∀k ∈ {1, ..., s}
+    
+    x = solution['x']
+    y = solution['y']
+    h = solution['h']
+    num_ativos, num_bases = x.shape
+    num_bases, num_equipes = y.shape
+
+    for i in range(num_ativos):
+        for j in range(num_bases):
+            for k in range(num_equipes):
+                if h[i, k] > (x[i, j] + y[j, k]) / 2:
+                    return False
+    return True
+
+def restricao_balanceamento(solution, eta, num_ativos, num_equipes):
+    #Restrição de Balanceamento: Cada equipe deve ter uma carga mínima.
+    
+    h = solution['h']
+    carga_minima = eta * (num_ativos / num_equipes)
+    return np.all(np.sum(h, axis=0) >= carga_minima)

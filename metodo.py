@@ -9,8 +9,20 @@ def objective_function_1(solution, constraints):
     solution['penalty'] = 0
     #solution['penalty_fitness'] = 0
 
-    # Calculo da função objetivo
-    solution['fitness'] = np.sum(solution['y'])
+    #CÁLCULO DO FITNESS
+    bases_com_equipes = #index das bases com equipes
+    # Inicializa a soma total das distâncias
+    soma_ativos_a_bases = 0 
+    
+    for base in bases_com_equipes:
+        ativos_da_base = #index dos ativos da base 
+        
+        # Soma as distâncias dos ativos para a base
+        if len(ativos_da_base) > 0:
+            distancias = #soma das distancias dos ativos à base 
+            soma_ativos_a_bases += #soma de todas as bases
+    
+    solution['fitness'] = soma_ativos_a_bases
 
     # Calculo das penalidades
     solution['penalty'] = penalty_method(solution, constraints)
