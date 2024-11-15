@@ -49,7 +49,7 @@ def restricao_hik(solution):
                     return False
     return True
 
-def restricao_balanceamento(solution, eta, num_ativos, num_equipes):
+def restricao_balanceamento(solution):
     #Restrição de Balanceamento: Cada equipe deve ter uma carga mínima.
     
     h = solution['h']

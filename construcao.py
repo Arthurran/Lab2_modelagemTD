@@ -87,8 +87,6 @@ def solucao_inicial1(solution, distancia_bases_ativos):
     for equipe, base in enumerate(bases_ocupadas):
         solution['y'][base, equipe] = 1  # Marca que a equipe ocupa a base
 
-    print(solution['y'])
-
     #(3) Atribuir cada ativo à base ocupada mais próxima
     for ativo in range(num_ativos):
         # Seleciona apenas as distâncias para as bases ocupadas

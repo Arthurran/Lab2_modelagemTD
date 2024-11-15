@@ -55,8 +55,6 @@ def plot_solution(solution, coords_bases, coords_ativos):
 
     # Converter para numpy array, se necessário
     bases_com_equipes = np.array(bases_com_equipes)
-
-    print(bases_com_equipes)
     bases_ativas = coords_bases.iloc[bases_com_equipes]
 
     # Iterar sobre cada equipe

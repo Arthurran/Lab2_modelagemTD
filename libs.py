@@ -8,5 +8,6 @@ import random
 num_ativos = 125
 num_bases = 14
 num_equipes = 3
+eta = 0.7
 
 from plot import *
