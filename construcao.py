@@ -71,14 +71,17 @@ def solucao_inicial1(solution, distancia_bases_ativos):
         # Ordenar as distâncias dos ativos para a base atual
         distancias_ordenadas = np.sort(distancia_bases_ativos[:, base])
         # Somar as distâncias dos 100 ativos mais próximos
-        soma_distancias = np.sum(distancias_ordenadas[:10])
+        soma_distancias = np.sum(distancias_ordenadas[:15])
         soma_distancias_bases.append((base, soma_distancias))
 
     # Ordenar as bases pela soma das distâncias (ordem crescente)
     soma_distancias_bases.sort(key=lambda x: x[1])
 
-    # Selecionar as três bases com a menor soma de distâncias
-    bases_ocupadas = [item[0] for item in soma_distancias_bases[:num_equipes]]
+    # Selecionar as seis bases com a menor soma de distâncias
+    top_6_bases = [item[0] for item in soma_distancias_bases[:6]]
+
+    # Distribuir bases entre equipes
+    bases_ocupadas = random.sample(top_6_bases, k=num_equipes)
 
     #(2) Atribuir as equipes às bases selecionadas
     for equipe, base in enumerate(bases_ocupadas):
