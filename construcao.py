@@ -65,13 +65,13 @@ def generate_solution(distancia_bases_ativos, funcao_obj):
 def solucao_inicial1(solution, distancia_bases_ativos):
     print("SOLUÇÃO INICIAL1")
 
-    #(1) Calcular a soma das distâncias para os 100 ativos mais próximos de cada base
+    #(1) Calcular a soma das distâncias para os 10 ativos mais próximos de cada base
     soma_distancias_bases = []
     for base in range(num_bases):
         # Ordenar as distâncias dos ativos para a base atual
         distancias_ordenadas = np.sort(distancia_bases_ativos[:, base])
         # Somar as distâncias dos 100 ativos mais próximos
-        soma_distancias = np.sum(distancias_ordenadas[:100])
+        soma_distancias = np.sum(distancias_ordenadas[:10])
         soma_distancias_bases.append((base, soma_distancias))
 
     # Ordenar as bases pela soma das distâncias (ordem crescente)
@@ -83,6 +83,8 @@ def solucao_inicial1(solution, distancia_bases_ativos):
     #(2) Atribuir as equipes às bases selecionadas
     for equipe, base in enumerate(bases_ocupadas):
         solution['y'][base, equipe] = 1  # Marca que a equipe ocupa a base
+
+    print(solution['y'])
 
     #(3) Atribuir cada ativo à base ocupada mais próxima
     for ativo in range(num_ativos):

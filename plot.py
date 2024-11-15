@@ -38,16 +38,25 @@ def cor_vibrante():
 def plot_solution(solution, coords_bases, coords_ativos):
     # Configurar o gráfico
     plt.figure(figsize=(10, 8))
-    cores = ['red', 'blue', 'green'][:num_equipes]
+    cores = ['red', 'blue', 'green'] #red = 0, blue = 1, green = 2
 
     # Plotar todas as bases
     plt.scatter(
         coords_bases['longitude_base'], coords_bases['latitude_base'],
-        color='gray', s=100, marker='p', edgecolors='black', label='Bases', alpha=0.6
+        color='gray', s=150, marker='p', edgecolors='black', label='Bases', alpha=0.6
     )
 
-    # Obter as bases ocupadas
-    bases_com_equipes = np.where(solution['y'] == 1)[0]
+    bases_com_equipes = []
+    # Iterar pelas equipes e bases
+    for equipe in range(num_equipes):
+        for base in range(num_bases):
+            if solution['y'][base][equipe] == 1:
+                bases_com_equipes.append(base)
+
+    # Converter para numpy array, se necessário
+    bases_com_equipes = np.array(bases_com_equipes)
+
+    print(bases_com_equipes)
     bases_ativas = coords_bases.iloc[bases_com_equipes]
 
     # Iterar sobre cada equipe
@@ -56,16 +65,16 @@ def plot_solution(solution, coords_bases, coords_ativos):
             # Plotar as equipes associada à equipe k
             plt.scatter(
                 bases_ativas.iloc[k]['longitude_base'], bases_ativas.iloc[k]['latitude_base'],
-                color=cores[k], s=70, label=f'Equipe {k}', edgecolors='black', alpha=0.8
+                color=cores[k], s=70, label=f'Equipe {k}', edgecolors='black', alpha=0.8, linewidths = 0.5
             )
 
         # Plotar os ativos atendidos pela equipe k
         ativos_na_equipe_k = np.where(solution['h'][:,k] == 1)[0]
         ativos_k = coords_ativos.iloc[ativos_na_equipe_k]
-
+        
         plt.scatter(
           ativos_k['longitude_ativo'], ativos_k['latitude_ativo'],
-          color=cores[k], s=50, label=f'Ativos Equipe {k}', alpha=0.7
+          color=cores[k], s=20, label=f'Ativos Equipe {k}', alpha=0.7
         )
 
     # Ajustar limites e adicionar detalhes ao gráfico
