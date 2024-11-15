@@ -1,9 +1,10 @@
 from numpy import np
 import construcao 
-#from vizinhanca import neighborhood_change 
+import plot
+from vizinhanca import neighborhood_change 
 
 # Função objetivo 1: Minimizar distâncias 
-def objective_function_1(solution, constraints):
+def objective_function_1(solution, constraints, dist_bases_ativos):
 
     solution['fitness'] = 0
     solution['penalty'] = 0
@@ -51,6 +52,8 @@ def solution_check(new_solution, solution):
     # Aceita se a penalidade for a mesma e o fitness for melhor
     if new_solution['penalty'] == solution['penalty'] and new_solution['fitness'] <= solution['fitness']:
         return True
+    
+    return False
 
 def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max = 3):
 
@@ -66,8 +69,14 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
     #elif objective_function == objective_function_2:
     #    obj_function = 2
 
-    solution = construcao.generate_solution(construcao.get_clients(),obj_function)
-    objective_function(solution, constraints)
+    dist_bases_ativos, coords_bases, coords_ativos = construcao.read_geolocation_data() 
+
+    solution = construcao.generate_solution(dist_bases_ativos,obj_function)
+
+    plot.plot_solution(solution, coords_bases, coords_ativos)
+    exit()
+
+    objective_function(solution, constraints, dist_bases_ativos)
 
     for i in range(max_iter):
       print(i)

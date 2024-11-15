@@ -3,7 +3,6 @@ import copy
 import matplotlib.pyplot as plt
 import pandas as pd
 import random
-import pulp
 
 # # Define os parâmetros do problema
 num_ativos = 1749

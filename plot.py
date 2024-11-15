@@ -37,39 +37,31 @@ def cor_vibrante():
 
 
 # Função para plotar os PAs e os clientes em um grid
-def plot_solution(solution):
-    # Criar uma nova figura
-    plt.figure(figsize=(8, 8))
+def plot_solution(solution, ):
+    
+    # Plotando o gráfico
+    plt.figure(figsize=(10, 8))
 
-    # Plotar o grid
-    plt.grid(True, linestyle='--', color='gray', alpha=0.5)
+    # Plotando as bases (com pentágonos e bordas pretas)
+    plt.scatter(bases_longitude, bases_latitude, color='red', s=150, marker='p', label='Bases', edgecolors='black', facecolors='none', alpha=0.7)
 
-    # Definindo as cores RGB para os 30 pontos de acesso
-    cores_acesso = [cor_vibrante() for _ in range(30)]
+    # Plotando os clientes (ativos) como pontos pequenos
+    plt.scatter(clientes_longitude, clientes_latitude, color='blue', s=30, label='Ativos', alpha=0.7)
 
-    # Plotar os PAs
-    pa_coordinates = solution['pa_coordinates']
-    posicao_cliente = solution['client_coordinates']
+    # Ajustando os limites dos eixos para garantir que todos os pontos sejam visíveis
+    plt.xlim(df['longitude_base'].min() - 0.05, df['longitude_base'].max() + 0.05)
+    plt.ylim(df['latitude_base'].min() - 0.05, df['latitude_base'].max() + 0.05)
 
-    count = 0
+    # Títulos e rótulos
+    plt.title('Bases e Ativos no Grid', fontsize=14)
+    plt.xlabel('Longitude')
+    plt.ylabel('Latitude')
 
-    # Plotar os clientes
-    for i in range(num_pa_locations):
-      if solution['y'][i] == 1:
-        plt.scatter(pa_coordinates[i, 0], pa_coordinates[i, 1], marker='s', c='black', label='Pontos de Acesso') 
-        for j in range(num_clients):
-          if solution['x'][i, j] == 1:
-            plt.scatter(posicao_cliente[j, 0], posicao_cliente[j, 1], marker='o', c=cores_acesso[i], label='Clientes')
-            count += 1
+    # Legenda
+    plt.legend()
 
-    print(count)
-
-    # Adicionar legendas e título
-    plt.xlabel('Coordenada X')
-    plt.ylabel('Coordenada Y')
-    plt.title('Pontos de Acesso e Clientes')
-    #plt.legend()
-
-    # Mostrar o gráfico
+    # Exibindo o gráfico
+    plt.grid(True)
     plt.show()
+
 
