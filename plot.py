@@ -42,19 +42,14 @@ def plot_solution(solution, coords_bases, coords_ativos):
     # Plotando o gráfico
     plt.figure(figsize=(10, 8))
 
+    cores = ['red','blue','green']
+
     # Dados do DataFrame
     bases_latitude = coords_bases['latitude_base']
     bases_longitude = coords_bases['longitude_base']
-    ativos_latitude = coords_ativos['latitude_ativo']
-    ativos_longitude = coords_ativos['longitude_ativo']
+    #ativos_latitude = coords_ativos['latitude_ativo']
+    #ativos_longitude = coords_ativos['longitude_ativo']
 
-    # Plotando as bases (com pentágonos e bordas pretas)
-    plt.scatter(bases_longitude, bases_latitude, color='red', s=150, marker='p', label='Bases', edgecolors='black', facecolors='none', alpha=0.7)
-
-    # Plotando os ativos (ativos) como pontos pequenos
-    plt.scatter(ativos_longitude, ativos_latitude, color='blue', s=30, label='Ativos', alpha=0.7)
-
-    # Plotando as equipes como pontos vermelhos dentro da base
     # pegar indexes de solution['y'] = 1
     bases_com_equipes = np.where(solution['y'] == 1)[0]
 
@@ -63,7 +58,28 @@ def plot_solution(solution, coords_bases, coords_ativos):
     base_latitude_com_equipe = df_bases_com_equipes['latitude_base']
     base_longitude_com_equipe = df_bases_com_equipes['longitude_base']
 
-    plt.scatter(base_longitude_com_equipe, base_latitude_com_equipe, color='red', s=70, label='Bases', edgecolors='black', alpha=0.7)
+    # Plotando as bases (com pentágonos e bordas pretas)
+    plt.scatter(bases_longitude, bases_latitude, color='gray', s=150, marker='p', label='Bases', edgecolors='black', facecolors='none', alpha=0.7)
+
+    for k in range(num_equipes):
+        print(k)
+        # Obtendo as coordenadas da base associada à equipe k
+        if k < len(base_longitude_com_equipe):  # Verifica se k está dentro dos limites
+            longitude_equipe = base_longitude_com_equipe.iloc[k]
+            latitude_equipe = base_latitude_com_equipe.iloc[k]
+            plt.scatter(longitude_equipe, latitude_equipe, color=cores[k], s=70, label=f'Equipe {k}', edgecolors='black', alpha=0.7)
+
+        # Obtendo os ativos atendidos pela equipe k
+        ativos_na_equipe_k = np.where(solution['h'][k] == 1)[0]
+        df_ativos_na_equipe_k = coords_ativos.iloc[ativos_na_equipe_k]
+        ativos_latitude_k = df_ativos_na_equipe_k['latitude_ativo']
+        ativos_longitude_k = df_ativos_na_equipe_k['longitude_ativo']
+
+        # Plotando os ativos atendidos pela equipe k
+        plt.scatter(
+            ativos_longitude_k, ativos_latitude_k,
+            color=cores[k], s=30, label=f'Ativos Equipe {k}', alpha=0.7
+        )
 
     # Ajustando os limites dos eixos para garantir que todos os pontos sejam visíveis
     plt.xlim(coords_bases['longitude_base'].min() - 0.05, coords_bases['longitude_base'].max() + 0.05)
