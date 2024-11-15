@@ -35,66 +35,48 @@ def cor_vibrante():
     cor_hex = "#{:02x}{:02x}{:02x}".format(r, g, b)
     return cor_hex
 
-
-# Função para plotar os PAs e os clientes em um grid
 def plot_solution(solution, coords_bases, coords_ativos):
-    
-    # Plotando o gráfico
+    # Configurar o gráfico
     plt.figure(figsize=(10, 8))
+    cores = ['red', 'blue', 'green'][:num_equipes]
 
-    cores = ['red','blue','green']
+    # Plotar todas as bases
+    plt.scatter(
+        coords_bases['longitude_base'], coords_bases['latitude_base'],
+        color='gray', s=100, marker='p', edgecolors='black', label='Bases', alpha=0.6
+    )
 
-    # Dados do DataFrame
-    bases_latitude = coords_bases['latitude_base']
-    bases_longitude = coords_bases['longitude_base']
-    #ativos_latitude = coords_ativos['latitude_ativo']
-    #ativos_longitude = coords_ativos['longitude_ativo']
-
-    # pegar indexes de solution['y'] = 1
+    # Obter as bases ocupadas
     bases_com_equipes = np.where(solution['y'] == 1)[0]
+    bases_ativas = coords_bases.iloc[bases_com_equipes]
 
-    # Filtrando o DataFrame com base nos índices em bases_com_equipes
-    df_bases_com_equipes = coords_bases.iloc[bases_com_equipes]
-    base_latitude_com_equipe = df_bases_com_equipes['latitude_base']
-    base_longitude_com_equipe = df_bases_com_equipes['longitude_base']
-
-    # Plotando as bases (com pentágonos e bordas pretas)
-    plt.scatter(bases_longitude, bases_latitude, color='gray', s=150, marker='p', label='Bases', edgecolors='black', facecolors='none', alpha=0.7)
-
+    # Iterar sobre cada equipe
     for k in range(num_equipes):
-        print(k)
-        # Obtendo as coordenadas da base associada à equipe k
-        if k < len(base_longitude_com_equipe):  # Verifica se k está dentro dos limites
-            longitude_equipe = base_longitude_com_equipe.iloc[k]
-            latitude_equipe = base_latitude_com_equipe.iloc[k]
-            plt.scatter(longitude_equipe, latitude_equipe, color=cores[k], s=70, label=f'Equipe {k}', edgecolors='black', alpha=0.7)
+        if k < len(bases_ativas):
+            # Plotar as equipes associada à equipe k
+            plt.scatter(
+                bases_ativas.iloc[k]['longitude_base'], bases_ativas.iloc[k]['latitude_base'],
+                color=cores[k], s=70, label=f'Equipe {k}', edgecolors='black', alpha=0.8
+            )
 
-        # Obtendo os ativos atendidos pela equipe k
-        ativos_na_equipe_k = np.where(solution['h'][k] == 1)[0]
-        df_ativos_na_equipe_k = coords_ativos.iloc[ativos_na_equipe_k]
-        ativos_latitude_k = df_ativos_na_equipe_k['latitude_ativo']
-        ativos_longitude_k = df_ativos_na_equipe_k['longitude_ativo']
+        # Plotar os ativos atendidos pela equipe k
+        ativos_na_equipe_k = np.where(solution['h'][:,k] == 1)[0]
+        ativos_k = coords_ativos.iloc[ativos_na_equipe_k]
 
-        # Plotando os ativos atendidos pela equipe k
         plt.scatter(
-            ativos_longitude_k, ativos_latitude_k,
-            color=cores[k], s=30, label=f'Ativos Equipe {k}', alpha=0.7
+          ativos_k['longitude_ativo'], ativos_k['latitude_ativo'],
+          color=cores[k], s=50, label=f'Ativos Equipe {k}', alpha=0.7
         )
 
-    # Ajustando os limites dos eixos para garantir que todos os pontos sejam visíveis
-    plt.xlim(coords_bases['longitude_base'].min() - 0.05, coords_bases['longitude_base'].max() + 0.05)
-    plt.ylim(coords_bases['latitude_base'].min() - 0.05, coords_bases['latitude_base'].max() + 0.05)
-
-    # Títulos e rótulos
-    plt.title('Bases e Ativos no Grid', fontsize=14)
+    # Ajustar limites e adicionar detalhes ao gráfico
+    plt.title('Distribuição de Bases e Ativos', fontsize=14)
     plt.xlabel('Longitude')
     plt.ylabel('Latitude')
-
-    # Legenda
     plt.legend()
-
-    # Exibindo o gráfico
     plt.grid(True)
+
+    # Exibir o gráfico
     plt.show()
+
 
 
