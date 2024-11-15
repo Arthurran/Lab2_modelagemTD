@@ -1,7 +1,7 @@
-from numpy import np
+from libs import *
 import construcao 
 import plot
-from vizinhanca import neighborhood_change 
+#from vizinhanca import neighborhood_change 
 
 # Função objetivo 1: Minimizar distâncias 
 def objective_function_1(solution, constraints, dist_bases_ativos):
@@ -11,17 +11,17 @@ def objective_function_1(solution, constraints, dist_bases_ativos):
     #solution['penalty_fitness'] = 0
 
     #CÁLCULO DO FITNESS
-    bases_com_equipes = #index das bases com equipes
+    #bases_com_equipes = #index das bases com equipes
     # Inicializa a soma total das distâncias
     soma_ativos_a_bases = 0 
     
-    for base in bases_com_equipes:
-        ativos_da_base = #index dos ativos da base 
+    #for base in bases_com_equipes:
+        #ativos_da_base = #index dos ativos da base 
         
         # Soma as distâncias dos ativos para a base
-        if len(ativos_da_base) > 0:
-            distancias = #soma das distancias dos ativos à base 
-            soma_ativos_a_bases += #soma de todas as bases
+        #if len(ativos_da_base) > 0:
+            #distancias = #soma das distancias dos ativos à base 
+            #soma_ativos_a_bases += #soma de todas as bases
     
     solution['fitness'] = soma_ativos_a_bases
 

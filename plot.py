@@ -37,20 +37,37 @@ def cor_vibrante():
 
 
 # Função para plotar os PAs e os clientes em um grid
-def plot_solution(solution, ):
+def plot_solution(solution, coords_bases, coords_ativos):
     
     # Plotando o gráfico
     plt.figure(figsize=(10, 8))
 
+    # Dados do DataFrame
+    bases_latitude = coords_bases['latitude_base']
+    bases_longitude = coords_bases['longitude_base']
+    ativos_latitude = coords_ativos['latitude_ativo']
+    ativos_longitude = coords_ativos['longitude_ativo']
+
     # Plotando as bases (com pentágonos e bordas pretas)
     plt.scatter(bases_longitude, bases_latitude, color='red', s=150, marker='p', label='Bases', edgecolors='black', facecolors='none', alpha=0.7)
 
-    # Plotando os clientes (ativos) como pontos pequenos
-    plt.scatter(clientes_longitude, clientes_latitude, color='blue', s=30, label='Ativos', alpha=0.7)
+    # Plotando os ativos (ativos) como pontos pequenos
+    plt.scatter(ativos_longitude, ativos_latitude, color='blue', s=30, label='Ativos', alpha=0.7)
+
+    # Plotando as equipes como pontos vermelhos dentro da base
+    # pegar indexes de solution['y'] = 1
+    bases_com_equipes = np.where(solution['y'] == 1)[0]
+
+    # Filtrando o DataFrame com base nos índices em bases_com_equipes
+    df_bases_com_equipes = coords_bases.iloc[bases_com_equipes]
+    base_latitude_com_equipe = df_bases_com_equipes['latitude_base']
+    base_longitude_com_equipe = df_bases_com_equipes['longitude_base']
+
+    plt.scatter(base_longitude_com_equipe, base_latitude_com_equipe, color='red', s=70, label='Bases', edgecolors='black', alpha=0.7)
 
     # Ajustando os limites dos eixos para garantir que todos os pontos sejam visíveis
-    plt.xlim(df['longitude_base'].min() - 0.05, df['longitude_base'].max() + 0.05)
-    plt.ylim(df['latitude_base'].min() - 0.05, df['latitude_base'].max() + 0.05)
+    plt.xlim(coords_bases['longitude_base'].min() - 0.05, coords_bases['longitude_base'].max() + 0.05)
+    plt.ylim(coords_bases['latitude_base'].min() - 0.05, coords_bases['latitude_base'].max() + 0.05)
 
     # Títulos e rótulos
     plt.title('Bases e Ativos no Grid', fontsize=14)

@@ -55,3 +55,5 @@ def restricao_balanceamento(solution, eta, num_ativos, num_equipes):
     h = solution['h']
     carga_minima = eta * (num_ativos / num_equipes)
     return np.all(np.sum(h, axis=0) >= carga_minima)
+
+constraints = [restricao_cobertura_grupo, restricao_atribuicao_unica, restricao_compatibilidade, restricao_monitoramento, restricao_hik, restricao_balanceamento]

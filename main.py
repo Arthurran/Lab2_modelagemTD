@@ -1,6 +1,6 @@
 from libs import *
 import metodo 
-from constraints import constraints
+from restricoes import constraints
 from metodo import objective_function_1#,objective_function_2
 
 # Chamar o algoritmo de Penalidade para otimizar cada função objetivo individualmente

@@ -33,10 +33,10 @@ def read_geolocation_data():
         distancias_bases_ativos[ativos_idx, base_idx] = row['distancia']
 
     # Preenche a matriz de coordenadas das bases
-    coords_bases = base_indices.to_numpy()
-    coords_ativos = ativos_indices.to_numpy()
+    #coords_bases = bases_unicas.to_numpy()
+    #coords_ativos = ativos_unicos.to_numpy()
     
-    return distancias_bases_ativos, coords_bases, coords_ativos
+    return distancias_bases_ativos, bases_unicas, ativos_unicos
 
 # Função para gerar uma solução base
 def generate_solution(distancia_bases_ativos, funcao_obj):
@@ -97,8 +97,6 @@ def solucao_inicial1(solution, distancia_bases_ativos):
         solution['h'][ativo, equipe_responsavel] = 1  # Marca que o ativo é mantido pela equipe
 
     print("Solução inicial gerada com sucesso.")
-    return solution
-
     return solution
 
 
