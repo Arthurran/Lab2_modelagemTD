@@ -1,7 +1,7 @@
 from libs import *
 import construcao 
 import plot
-#from vizinhanca import neighborhood_change 
+from vizinhanca import neighborhood_change 
 
 # Função objetivo 1: Minimizar distâncias 
 def objective_function_1(solution, constraints, dist_bases_ativos):
@@ -56,7 +56,7 @@ def solution_check(new_solution, solution):
     
     return False
 
-def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max = 3):
+def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max = 1):
 
     progress = {
         'fitness': np.zeros(max_iter),
@@ -71,15 +71,11 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
     #    obj_function = 2
 
     dist_bases_ativos, coords_bases, coords_ativos = construcao.read_geolocation_data() 
-
     solution = construcao.generate_solution(dist_bases_ativos,obj_function)
 
     plot.plot_solution(solution, coords_bases, coords_ativos)
 
     objective_function(solution, constraints, dist_bases_ativos)
-    print(f"solution['fitness']: {solution['fitness']}")
-    print(f"solution['penalty']: {solution['penalty']}")
-    exit()
     for i in range(max_iter):
       print(i)
       neighborhood = 1
@@ -89,10 +85,10 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
 
       while neighborhood <= neighborhood_max:
 
-        new_solution = neighborhood_change(solution, neighborhood,obj_function)
+        new_solution = neighborhood_change(solution, neighborhood,obj_function, dist_bases_ativos)
 
         # Avaliar a solução
-        objective_function(new_solution, constraints)
+        objective_function(new_solution, constraints, dist_bases_ativos)
 
         # Compara a solução nova com a atual com as soluções da vizinhança
         if solution_check(new_solution, solution):
