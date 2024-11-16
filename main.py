@@ -2,6 +2,7 @@ from libs import *
 import metodo 
 from restricoes import constraints
 from metodo import objective_function_1, objective_function_2
+from plot import plot_progress
 
 # Chamar o algoritmo de Penalidade para otimizar cada função objetivo individualmente
 result = []
@@ -9,12 +10,12 @@ progress = {}
 best_solution = {}
 
 for i in range(5): #ALTERAR RANGE 1 PARA 5
-    best_solution[i], progress[i] = metodo.bvns_method(objective_function_2, constraints)
+    best_solution[i], progress[i] = metodo.bvns_method(objective_function_1, constraints)
     print("FITNESS: ", best_solution[i]['fitness'])
     print("PENALIDADE: ",best_solution[i]['penalty'])
     print("FIT+PEN: ",best_solution[i]['penalty_fitness'])
     result.append(best_solution[i]['penalty_fitness'])
-    print("num PAs: ", i, np.sum(best_solution[i]['y']))
+    #print("num PAs: ", i, np.sum(best_solution[i]['y']))
     #plot_solution(best_solution[i])
     #print("PAs coord: ", i, best_solution['pa_coordinates'])
 

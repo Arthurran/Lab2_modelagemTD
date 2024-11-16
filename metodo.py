@@ -58,10 +58,10 @@ def penalty_method(solution, constraints):
     iterador = 1
     for constraint in constraints:
       if not constraint(solution):
-        #print(f"Contraint problematica: {iterador}")
+        print(f"Contraint problematica: {iterador}")
         penalty += 1
       iterador += 1
-
+    print("\n----------------------------------------------------------\n")
     return penalty
 
 # Atualizar a melhor solução encontrada e altera a vizinhança se necessário
@@ -76,7 +76,7 @@ def solution_check(new_solution, solution):
     
     return False
 
-def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max = 1):
+def bvns_method(objective_function, constraints, max_iter=10, neighborhood_max = 2):
 
     progress = {
         'fitness': np.zeros(max_iter),
@@ -93,11 +93,10 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
     dist_bases_ativos, coords_bases, coords_ativos = construcao.read_geolocation_data() 
     solution = construcao.generate_solution(dist_bases_ativos,obj_function)
 
-    plot.plot_solution(solution, coords_bases, coords_ativos)
+    #plot.plot_solution(solution, coords_bases, coords_ativos)
 
     objective_function(solution, constraints, dist_bases_ativos)
     for i in range(max_iter):
-      print(i)
       neighborhood = 1
 
       progress['fitness'][i] = solution['fitness']
@@ -105,7 +104,7 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
 
       while neighborhood <= neighborhood_max:
 
-        new_solution = neighborhood_change(solution, neighborhood,obj_function, dist_bases_ativos)
+        new_solution = neighborhood_change(solution, neighborhood,obj_function, dist_bases_ativos, coords_bases)
 
         # Avaliar a solução
         objective_function(new_solution, constraints, dist_bases_ativos)
@@ -114,17 +113,10 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
         if solution_check(new_solution, solution):
             print(f"solution['fitness']: {solution['fitness']}")
             print(f"solution['penalty']: {solution['penalty']}")
-            #print(f"Num PA's: {np.sum(solution['y'])}")
-            #print(f"solution['y']: {solution['y']}")
             solution = copy.deepcopy(new_solution)
             print(f"new_solution['fitness']: {solution['fitness']}")
             print(f"new_solution['penalty']: {solution['penalty']}")
-            #print(f"new_solution Num PA's: {np.sum(solution['y'])}")
-            #print(f"new_solution['y']: {solution['y']}")
-            #plot_solution(solution)
-            #neighborhood = 1
-        #else:
+            
         neighborhood += 1
-    
     print("\n----------------------------------------------------------\n")
     return solution, progress
