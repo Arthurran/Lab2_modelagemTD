@@ -18,8 +18,8 @@ def plot_progress(progress, i):
 
     # Adicionar legendas e título
     plt.xlabel('Iterações')
-    plt.ylabel('Numero de PAs')
-    plt.title('Convergência das soluções')
+    #plt.ylabel('Numero de PAs')
+    #plt.title('Convergência das soluções')
     #plt.legend()
 
     # Mostrar o gráfico
