@@ -24,5 +24,5 @@ print('O valor STD encontrado foi:', np.std(result))
 print('O valor MAX encontrado foi:', np.max(result))
 
 # Plotar a solução da função objetivo 1
-#plot_progress(progress,5)
+plot_progress(progress,5)
 

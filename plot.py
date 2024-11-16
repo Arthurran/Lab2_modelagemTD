@@ -8,19 +8,14 @@ def plot_progress(progress, i):
     plt.figure(figsize=(12, 5))
 
     # Plotar resultados
-    for i in range(i):
-      plt.plot(progress[0]['fitness'], label='Fitness 1')
-      plt.plot(progress[1]['fitness'], label='Fitness 2')
-      plt.plot(progress[2]['fitness'], label='Fitness 3')
-      plt.plot(progress[3]['fitness'], label='Fitness 4')
-      plt.plot(progress[4]['fitness'], label='Fitness 5')
-      # plt.scatter(client_coordinates[:, 0], client_coordinates[:, 1], marker='o', color='blue', label='Clientes')
+    for idx in range(i):
+        plt.plot(progress[idx]['fitness'], label=f'Fitness {idx + 1}')
 
     # Adicionar legendas e título
     plt.xlabel('Iterações')
-    plt.ylabel('Numero de PAs')
+    plt.ylabel('Valor Total da Distância')
     plt.title('Convergência das soluções')
-    #plt.legend()
+    plt.legend()
 
     # Mostrar o gráfico
     plt.show()
