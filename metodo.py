@@ -32,6 +32,26 @@ def objective_function_1(solution, constraints, dist_bases_ativos):
     # Aplicação das penalidades
     solution['penalty_fitness'] = solution['penalty'] + solution['fitness']
 
+def objective_function_2(solution, constraints):
+    solution['fitness'] = 0
+    solution['penalty'] = 0
+
+    #ativos_por_equipes = np.where(solution['h'] == 1)[0]
+    ativos_por_equipe = solution['h'].sum(axis=0)
+
+    mais_ativos = np.max(ativos_por_equipe)
+    menos_ativos = np.min(ativos_por_equipe)
+
+    diferenca_ativos_entre_equipes = mais_ativos - menos_ativos
+
+    solution['fitness'] = diferenca_ativos_entre_equipes
+
+    # Calculo das penalidades
+    solution['penalty'] = penalty_method(solution, constraints)
+
+    # Aplicação das penalidades
+    solution['penalty_fitness'] = solution['penalty'] + solution['fitness']
+
 # Aplicar as penalidades para as violações de restrições
 def penalty_method(solution, constraints):
     penalty = 0
@@ -67,8 +87,8 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
     obj_function = 0
     if objective_function == objective_function_1:
         obj_function = 1
-    #elif objective_function == objective_function_2:
-    #    obj_function = 2
+    elif objective_function == objective_function_2:
+        obj_function = 2
 
     dist_bases_ativos, coords_bases, coords_ativos = construcao.read_geolocation_data() 
     solution = construcao.generate_solution(dist_bases_ativos,obj_function)

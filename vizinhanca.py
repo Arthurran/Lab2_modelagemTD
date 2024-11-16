@@ -52,9 +52,50 @@ def trocar_ativos_entre_bases(solution, dist_bases_ativos):
     # Retornar a nova solução com a troca realizada
     return new_solution
 
-def trocar_equipes_de_bases(solution):
+def trocar_equipes_de_bases(solution, dist_bases_ativos):
+    # Copiar a solução para criar uma nova
+    new_solution = copy.deepcopy(solution) 
+    
+    # Pegar bases ativas (bases com equipes alocadas)
+    bases_com_equipes = np.where(np.sum(new_solution['y'], axis=1) > 0)[0]
 
-    return solution
+    # Inicializa um dicionário para armazenar a soma total das distâncias para cada base
+    bases_total_distancia = {}
+
+    # Itera sobre cada base ativa
+    for base in bases_com_equipes:
+        # Pega os ativos alocados à base
+        ativos_da_base = np.where(solution['x'][:, base] == 1)[0]
+
+        # Calcula a soma das distâncias dos ativos para a base
+        soma_distancia = 0
+        if len(ativos_da_base) > 0:
+            for ativo in ativos_da_base:
+                soma_distancia += dist_bases_ativos[ativo, base]
+
+        # Armazena a soma da distância para a base
+        bases_total_distancia[base] = soma_distancia
+
+    # Ordenar as bases pelo total de distância e pegar as duas maiores
+    bases_ordenadas = sorted(bases_total_distancia.items(), key=lambda x: x[1], reverse=True)
+    duas_maiores_bases = bases_ordenadas[:2]
+
+    # Selecionar duas bases aleatórias diferentes das maiores bases
+    todas_as_bases = set(range(dist_bases_ativos.shape[1]))
+    bases_disponiveis = list(todas_as_bases - set(bases_com_equipes))
+    novas_bases = random.sample(bases_disponiveis, 2)
+
+    # Realocar os ativos das duas maiores bases para as novas bases
+    for i, base_antiga in enumerate(duas_maiores_bases):
+        nova_base = novas_bases[i]
+        ativos_da_base_antiga = np.where(new_solution['x'][:, base_antiga] == 1)[0]
+
+        # Atualizar a alocação dos ativos para a nova base
+        for ativo in ativos_da_base_antiga:
+            new_solution['x'][ativo, base_antiga] = 0  # Remove o ativo da base antiga
+            new_solution['x'][ativo, nova_base] = 1    # Aloca o ativo na nova base
+
+    return new_solution
 
 
 
@@ -65,7 +106,7 @@ def neighborhood_change(solution,neighborhood,obj_function,dist_bases_ativos):
             case 1:
                 return trocar_ativos_entre_bases(solution,dist_bases_ativos)
             case 2:
-                return solution
+                return trocar_equipes_de_bases(solution,dist_bases_ativos)
             case 3:
                 return solution
 

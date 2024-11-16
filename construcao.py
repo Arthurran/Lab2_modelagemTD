@@ -56,8 +56,8 @@ def generate_solution(distancia_bases_ativos, funcao_obj):
 
     if funcao_obj == 1:
         return solucao_inicial1(solution, distancia_bases_ativos)
-    #elif funcao_obj == 2:
-        #return solucao_inicial2(solution)
+    elif funcao_obj == 2:
+        return solucao_inicial2(solution)
     else:
         print("ERRO! Função objetivo não informada, heurística construtiva não aplicada")
         exit()
@@ -65,12 +65,12 @@ def generate_solution(distancia_bases_ativos, funcao_obj):
 def solucao_inicial1(solution, distancia_bases_ativos):
     print("SOLUÇÃO INICIAL1")
 
-    #(1) Calcular a soma das distâncias para os 10 ativos mais próximos de cada base
+    #(1) Calcular a soma das distâncias para os 15 ativos mais próximos de cada base
     soma_distancias_bases = []
     for base in range(num_bases):
         # Ordenar as distâncias dos ativos para a base atual
         distancias_ordenadas = np.sort(distancia_bases_ativos[:, base])
-        # Somar as distâncias dos 100 ativos mais próximos
+        # Somar as distâncias dos 15 ativos mais próximos
         soma_distancias = np.sum(distancias_ordenadas[:15])
         soma_distancias_bases.append((base, soma_distancias))
 
@@ -102,4 +102,28 @@ def solucao_inicial1(solution, distancia_bases_ativos):
     print("Solução inicial gerada com sucesso.")
     return solution
 
+def solucao_inicial2(solution):
+    print("SOLUÇÃO INICIAL2")
 
+    #(1) Escolho aleatoriamente três bases para serem ocupadas
+    bases_ocupadas = random.sample(range(num_bases), num_equipes)
+
+    #(2) Atribuir as equipes às bases selecionadas
+    for equipe, base in enumerate(bases_ocupadas):
+        solution['y'][base, equipe] = 1
+
+    # (3) Adicionar X ativos aleatorios para asbases definidas -> balanceado e não envolve distância
+    max_ativos_per_equipe = int(round(num_ativos/num_equipes,0))
+
+    for base in bases_ocupadas:
+        for ativo in random.sample(range(num_ativos), max_ativos_per_equipe):
+            solution['x'][ativo, base] = 1  # Atribui o ativo à base
+
+            equipe_responsavel = np.argmax(solution['y'][base])
+            solution['h'][ativo, equipe_responsavel] = 1
+
+    ## TC2
+    # Atribuiu X ativos mais pertos a base 0 -> 125-X a base 1 -> 125-2X a base 2 
+
+    print("Solução inicial gerada com sucesso.")
+    return solution
