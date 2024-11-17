@@ -61,7 +61,18 @@ def trocar_ativos_entre_bases(solution, dist_bases_ativos, coords_bases):
     new_solution['x'][ativo_selecionado, base_2] = 1
     
     # Alterar a equipe do ativo
-    equipe_atual = np.where(new_solution['h'][ativo_selecionado, :] == 1)[0][0]  # Identificar a equipe atual
+    # Verificando se o ativo está alocado a alguma equipe
+    indices_equipes = np.where(new_solution['h'][ativo_selecionado, :] == 1)[0]
+
+    # Se não houver equipe atribuída ao ativo, podemos lidar com isso
+    if len(indices_equipes) == 0:
+        print(f"Erro: O ativo {ativo_selecionado} não está alocado a nenhuma equipe.")
+        # Aqui você pode adicionar o código para lidar com o erro, como retornar a solução original
+        return solution
+
+    # Caso contrário, atribuir a equipe corretamente
+    equipe_atual = indices_equipes[0]
+    
     # Remover o ativo da equipe atual
     new_solution['h'][ativo_selecionado, equipe_atual] = 0
     # Atribuir o ativo à nova equipe da base_2

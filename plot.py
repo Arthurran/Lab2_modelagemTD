@@ -13,7 +13,7 @@ def plot_progress(progress, i):
 
     # Adicionar legendas e título
     plt.xlabel('Iterações')
-    plt.ylabel('Valor Total da Distância')
+    plt.ylabel('fitness')
     plt.title('Convergência das soluções')
     plt.legend()
 

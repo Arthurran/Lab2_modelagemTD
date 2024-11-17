@@ -55,13 +55,7 @@ def generate_solution(distancia_bases_ativos, funcao_obj):
         'balanceamento_equipes':np.zeros(0) #Armazena o balanceamento entre as equipes
     }
 
-    if funcao_obj == 1:
-        return solucao_inicial1(solution, distancia_bases_ativos)
-    elif funcao_obj == 2:
-        return solucao_inicial2(solution)
-    else:
-        print("ERRO! Função objetivo não informada, heurística construtiva não aplicada")
-        exit()
+    return solucao_inicial1(solution, distancia_bases_ativos)
 
 def solucao_inicial1(solution, distancia_bases_ativos):
     print("SOLUÇÃO INICIAL1")

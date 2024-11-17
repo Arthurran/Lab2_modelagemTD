@@ -38,7 +38,7 @@ def objective_function_1(solution, constraints, dist_bases_ativos):
     # Aplicação das penalidades
     solution['penalty_fitness'] = solution['penalty'] + solution['fitness']
 
-def objective_function_2(solution, constraints):
+def objective_function_2(solution, constraints, dist_bases_ativos):
     solution['fitness'] = 0
     solution['penalty'] = 0
 
