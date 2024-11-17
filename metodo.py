@@ -107,7 +107,7 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
     dist_bases_ativos, coords_bases, coords_ativos = construcao.read_geolocation_data() 
     solution = construcao.generate_solution(dist_bases_ativos,obj_function)
 
-    #plot.plot_solution(solution, coords_bases, coords_ativos)
+    plot.plot_solution(solution, coords_bases, coords_ativos)
 
     objective_function(solution, constraints, dist_bases_ativos)
     for i in range(max_iter):
@@ -134,4 +134,6 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
             
         neighborhood += 1
     print("\n----------------------------------------------------------\n")
+    
+    plot.plot_solution(solution, coords_bases, coords_ativos)
     return solution, progress
