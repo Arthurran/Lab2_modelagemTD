@@ -62,10 +62,13 @@ def restricao_hik(solution):
     return True
 
 def restricao_balanceamento(solution):
-    #Restrição de Balanceamento: Cada equipe deve ter uma carga mínima.
-    
+    #Restrição de Balanceamento: Cada equipe deve ter uma carga mínima
     h = solution['h']
+    num_ativos, num_equipes = h.shape
     carga_minima = eta * (num_ativos / num_equipes)
+    
+    # Verifica se cada equipe tem pelo menos a carga mínima de ativos
     return np.all(np.sum(h, axis=0) >= carga_minima)
+
 
 constraints = [restricao_cobertura_grupo, restricao_atribuicao_unica, restricao_compatibilidade, restricao_monitoramento, restricao_hik, restricao_balanceamento]

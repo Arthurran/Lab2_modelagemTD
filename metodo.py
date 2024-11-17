@@ -29,6 +29,12 @@ def objective_function_1(solution, constraints, dist_bases_ativos):
     # Calculo das penalidades
     solution['penalty'] = penalty_method(solution, constraints)
 
+    # Cálculo do balanceamento entre as equipes
+    ativos_por_equipe = solution['h'].sum(axis=0)
+    mais_ativos = np.max(ativos_por_equipe)
+    menos_ativos = np.min(ativos_por_equipe)
+    solution['balanceamento_equipes'] = mais_ativos - menos_ativos
+
     # Aplicação das penalidades
     solution['penalty_fitness'] = solution['penalty'] + solution['fitness']
 
@@ -45,6 +51,7 @@ def objective_function_2(solution, constraints):
     diferenca_ativos_entre_equipes = mais_ativos - menos_ativos
 
     solution['fitness'] = diferenca_ativos_entre_equipes
+    solution['balanceamento_equipes'] = diferenca_ativos_entre_equipes
 
     # Calculo das penalidades
     solution['penalty'] = penalty_method(solution, constraints)
@@ -58,25 +65,32 @@ def penalty_method(solution, constraints):
     iterador = 1
     for constraint in constraints:
       if not constraint(solution):
-        print(f"Contraint problematica: {iterador}")
+        #print(f"Contraint problematica: {iterador}")
         penalty += 1
       iterador += 1
-    print("\n----------------------------------------------------------\n")
+    #print("\n----------------------------------------------------------\n")
     return penalty
 
-# Atualizar a melhor solução encontrada e altera a vizinhança se necessário
 def solution_check(new_solution, solution):
-    # Aceita se a nova solução tiver menor penalidade
+    # 1. Se a nova solução tiver penalidade menor, aceitar imediatamente
     if new_solution['penalty'] < solution['penalty']:
         return True
 
-    # Aceita se a penalidade for a mesma e o fitness for melhor
-    if new_solution['penalty'] == solution['penalty'] and new_solution['fitness'] <= solution['fitness']:
-        return True
-    
+    # 2. Se as penalidades são iguais, tentar minimizar o balanceamento de equipes
+    if new_solution['penalty'] == solution['penalty'] and new_solution['penalty'] != 0:
+        # A redução do balanceamento de equipes pode ajudar a diminuir a penalidade
+        if new_solution['balanceamento_equipes'] < solution['balanceamento_equipes']:
+            return True
+
+    # 3. Depois que a penalidade for zero, aceitamos soluções com fitness menor
+    if new_solution['penalty'] == 0:
+        # Aceitar se o fitness for menor
+        if new_solution['fitness'] < solution['fitness']:
+            return True
+
     return False
 
-def bvns_method(objective_function, constraints, max_iter=10, neighborhood_max = 2):
+def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max = 3):
 
     progress = {
         'fitness': np.zeros(max_iter),
@@ -111,6 +125,7 @@ def bvns_method(objective_function, constraints, max_iter=10, neighborhood_max =
 
         # Compara a solução nova com a atual com as soluções da vizinhança
         if solution_check(new_solution, solution):
+            print(f'Estrutura de vizinhanca: {neighborhood}')
             print(f"solution['fitness']: {solution['fitness']}")
             print(f"solution['penalty']: {solution['penalty']}")
             solution = copy.deepcopy(new_solution)

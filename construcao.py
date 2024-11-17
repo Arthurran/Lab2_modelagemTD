@@ -52,6 +52,7 @@ def generate_solution(distancia_bases_ativos, funcao_obj):
         'penalty': np.zeros(0), # Armazena a penalidade da solução
         'fitness': np.zeros(0), # Armazena o ajuste da solução
         'penalty_fitness': np.zeros(0), # Armazena o ajuste somado a penalidade da solução
+        'balanceamento_equipes':np.zeros(0) #Armazena o balanceamento entre as equipes
     }
 
     if funcao_obj == 1:
