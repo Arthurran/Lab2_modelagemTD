@@ -4,7 +4,7 @@ import plot
 from vizinhanca import neighborhood_change 
 
 # Função objetivo 1: Minimizar distâncias 
-def objective_function_1(solution, constraints, dist_bases_ativos):
+def objective_function_1(solution, constraints, dist_bases_ativos, prob_ativos):
 
     solution['fitness'] = 0
     solution['penalty'] = 0
@@ -28,12 +28,6 @@ def objective_function_1(solution, constraints, dist_bases_ativos):
 
     # Calculo das penalidades
     solution['penalty'] = penalty_method(solution, constraints)
-
-    # Cálculo do balanceamento entre as equipes
-    ativos_por_equipe = solution['h'].sum(axis=0)
-    mais_ativos = np.max(ativos_por_equipe)
-    menos_ativos = np.min(ativos_por_equipe)
-    solution['balanceamento_equipes'] = mais_ativos - menos_ativos
 
     # Aplicação das penalidades
     solution['penalty_fitness'] = solution['penalty'] + solution['fitness']
@@ -59,12 +53,6 @@ def objective_function_2(solution, constraints, dist_bases_ativos, prob_ativos):
 
     solution['penalty'] = penalty_method(solution, constraints)
 
-    # Cálculo do balanceamento entre as equipes
-    ativos_por_equipe = solution['h'].sum(axis=0)
-    mais_ativos = np.max(ativos_por_equipe)
-    menos_ativos = np.min(ativos_por_equipe)
-    solution['balanceamento_equipes'] = mais_ativos - menos_ativos
-
     # Aplicação das penalidades
     solution['penalty_fitness'] = solution['penalty'] + solution['fitness']
 
@@ -85,11 +73,13 @@ def solution_check(new_solution, solution):
     if new_solution['penalty'] < solution['penalty']:
         return True
 
+    """
     # 2. Se as penalidades são iguais, tentar minimizar o balanceamento de equipes
     if new_solution['penalty'] == solution['penalty'] and new_solution['penalty'] != 0:
         # A redução do balanceamento de equipes pode ajudar a diminuir a penalidade
         if new_solution['balanceamento_equipes'] < solution['balanceamento_equipes']:
             return True
+    """
 
     # 3. Depois que a penalidade for zero, aceitamos soluções com fitness menor
     if new_solution['penalty'] == 0:
@@ -99,7 +89,7 @@ def solution_check(new_solution, solution):
 
     return False
 
-def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max = 3):
+def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max = 2):
 
     progress = {
         'fitness': np.zeros(max_iter),
@@ -119,7 +109,7 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
         obj_function = 2
     """
 
-    solution = construcao.generate_solution(dist_bases_ativos)
+    solution = construcao.generate_solution(dist_bases_ativos, prob_ativos)
 
     plot.plot_solution(solution, coords_bases, coords_ativos)
 

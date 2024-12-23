@@ -45,9 +45,9 @@ def trocar_ativos_entre_bases(solution, dist_bases_ativos, coords_bases):
     # 4. Selecionar os ativos mais próximos da base_2
     ativos_base_1 = np.where(new_solution['x'][:, base_1] == 1)[0]  # Ativos na base_1
     distancias_base_receber = dist_bases_ativos[ativos_base_1, base_2]  # Distâncias dos ativos a base_2
-    ativos_proximos = np.argsort(distancias_base_receber)[:5]  # Selecionar 5 ativos mais próximos
+    ativos_proximos = np.argsort(distancias_base_receber)[:3]  # Selecionar 3 ativos mais próximos
 
-    # 5. Selecionar aleatoriamente 1 ativo entre os 5 selecionados
+    # 5. Selecionar aleatoriamente 1 ativo entre os 3 selecionados
     if len(ativos_proximos) > 0:
         ativo_selecionado = np.random.choice(ativos_proximos)
     else:
@@ -67,7 +67,6 @@ def trocar_ativos_entre_bases(solution, dist_bases_ativos, coords_bases):
     # Se não houver equipe atribuída ao ativo, podemos lidar com isso
     if len(indices_equipes) == 0:
         print(f"Erro: O ativo {ativo_selecionado} não está alocado a nenhuma equipe.")
-        # Aqui você pode adicionar o código para lidar com o erro, como retornar a solução original
         return solution
 
     # Caso contrário, atribuir a equipe corretamente
@@ -194,8 +193,8 @@ def neighborhood_change(solution,neighborhood,dist_bases_ativos, coords_bases):
             return trocar_equipes_de_bases(solution,dist_bases_ativos,coords_bases)
         case 2:
             return trocar_ativos_entre_bases(solution,dist_bases_ativos,coords_bases)
-        case 3:
-            return balancear_ativos_entre_equipes(solution,dist_bases_ativos)
+        #case 3:
+            #return balancear_ativos_entre_equipes(solution,dist_bases_ativos)
     """
     elif obj_function == 2:
         match neighborhood:
