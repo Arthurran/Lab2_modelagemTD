@@ -186,7 +186,7 @@ def balancear_ativos_entre_equipes(solution, dist_bases_ativos):
     # 8. Retornar a nova solução com a transferência realizada
     return new_solution
 
-def neighborhood_change(solution,neighborhood,obj_function,dist_bases_ativos, coords_bases):
+def neighborhood_change(solution,neighborhood,dist_bases_ativos, coords_bases):
   
     #if obj_function == 1:
     match neighborhood:

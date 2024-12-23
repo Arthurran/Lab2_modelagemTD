@@ -39,7 +39,7 @@ def read_geolocation_data():
     return distancias_bases_ativos, bases_unicas, ativos_unicos
 
 # Função para gerar uma solução base
-def generate_solution(distancia_bases_ativos, funcao_obj):
+def generate_solution(distancia_bases_ativos):
     print("Gerar solucao")
     # Inicialize as variáveis de decisão
     # 'distancias_bases_ativos':np.zeros((num_ativos, num_bases)) # armazena as distâncias dos ativos "i" às bases "j"
@@ -55,9 +55,6 @@ def generate_solution(distancia_bases_ativos, funcao_obj):
         'balanceamento_equipes':np.zeros(0) #Armazena o balanceamento entre as equipes
     }
 
-    return solucao_inicial1(solution, distancia_bases_ativos)
-
-def solucao_inicial1(solution, distancia_bases_ativos):
     print("SOLUÇÃO INICIAL1")
 
     #(1) Calcular a soma das distâncias para os 15 ativos mais próximos de cada base

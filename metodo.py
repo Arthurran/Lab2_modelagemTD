@@ -38,23 +38,32 @@ def objective_function_1(solution, constraints, dist_bases_ativos):
     # Aplicação das penalidades
     solution['penalty_fitness'] = solution['penalty'] + solution['fitness']
 
-def objective_function_2(solution, constraints, dist_bases_ativos):
+#dist_bases_ativos não deve mais ser chamada mas sim a probabilidade de falha de cada ativo  
+def objective_function_2(solution, constraints, dist_bases_ativos, prob_ativos):
     solution['fitness'] = 0
     solution['penalty'] = 0
 
-    #ativos_por_equipes = np.where(solution['h'] == 1)[0]
-    ativos_por_equipe = solution['h'].sum(axis=0)
+    # Calculo da solução 
+    soma_distancia_probabilidade = 0
+    bases_com_equipes = np.where(solution['y'] == 1)[0] 
 
+    for base in bases_com_equipes:
+        ativos_da_base = np.where(solution['x'][:,base]==1)[0] 
+
+        # Cálculo de fitness
+        if len(ativos_da_base) > 0:
+            for ativo in ativos_da_base:
+               soma_distancia_probabilidade += (dist_bases_ativos[ativo,base] * prob_ativos[ativo,2])
+            
+    solution['fitness'] = soma_distancia_probabilidade
+
+    solution['penalty'] = penalty_method(solution, constraints)
+
+    # Cálculo do balanceamento entre as equipes
+    ativos_por_equipe = solution['h'].sum(axis=0)
     mais_ativos = np.max(ativos_por_equipe)
     menos_ativos = np.min(ativos_por_equipe)
-
-    diferenca_ativos_entre_equipes = mais_ativos - menos_ativos
-
-    solution['fitness'] = diferenca_ativos_entre_equipes
-    solution['balanceamento_equipes'] = diferenca_ativos_entre_equipes
-
-    # Calculo das penalidades
-    solution['penalty'] = penalty_method(solution, constraints)
+    solution['balanceamento_equipes'] = mais_ativos - menos_ativos
 
     # Aplicação das penalidades
     solution['penalty_fitness'] = solution['penalty'] + solution['fitness']
@@ -98,18 +107,24 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
         'penalty_fitness': np.zeros(max_iter)
     }
 
+    dist_bases_ativos, coords_bases, coords_ativos = construcao.read_geolocation_data() 
+    #Leitura das probabilidades
+    prob_ativos = (pd.read_excel('probfalhaativos.xlsx',header=None)).to_numpy()
+
+    """
     obj_function = 0
     if objective_function == objective_function_1:
         obj_function = 1
     elif objective_function == objective_function_2:
         obj_function = 2
+    """
 
-    dist_bases_ativos, coords_bases, coords_ativos = construcao.read_geolocation_data() 
-    solution = construcao.generate_solution(dist_bases_ativos,obj_function)
+    solution = construcao.generate_solution(dist_bases_ativos)
 
     plot.plot_solution(solution, coords_bases, coords_ativos)
 
-    objective_function(solution, constraints, dist_bases_ativos)
+    objective_function(solution, constraints, dist_bases_ativos, prob_ativos)
+
     for i in range(max_iter):
       neighborhood = 1
 
@@ -118,10 +133,10 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
 
       while neighborhood <= neighborhood_max:
 
-        new_solution = neighborhood_change(solution, neighborhood,obj_function, dist_bases_ativos, coords_bases)
+        new_solution = neighborhood_change(solution, neighborhood, dist_bases_ativos, coords_bases)
 
         # Avaliar a solução
-        objective_function(new_solution, constraints, dist_bases_ativos)
+        objective_function(new_solution, constraints, dist_bases_ativos, prob_ativos)
 
         # Compara a solução nova com a atual com as soluções da vizinhança
         if solution_check(new_solution, solution):
