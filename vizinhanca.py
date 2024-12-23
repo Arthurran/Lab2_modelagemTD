@@ -14,51 +14,31 @@ def trocar_ativos_entre_bases(solution, dist_bases_ativos, coords_bases):
         print("ERRO! Não há bases ocupadas suficientes para realizar a troca.")
         return solution
     
-    # 2. Selecionar a base com a equipe que tem mais ativos associados
-    max_ativos_por_base = []
+    # 2. Selecionar aleatoriamente uma das bases ocupadas
+    base_1 = np.random.choice(bases_ocupadas)
+    
+    # 3. Selecionar um entre os três ativos mais distantes de base_1
+    ativos_base_1 = np.where(new_solution['x'][:, base_1] == 1)[0]
+    distancias_ativos_base_1 = dist_bases_ativos[ativos_base_1, base_1]
+    ativo_selecionado = np.random.choice(np.argsort(distancias_ativos_base_1)[:3]) # Selecionar um entre tres ativos de base_1 mais distantes
 
-    for base in bases_ocupadas:
-        equipes_ocupando_base = np.where(new_solution['y'][base] == 1)[0]
-        for equipe in equipes_ocupando_base:
-            ativos_equipe = np.sum(new_solution['h'][:, equipe])  # Quantidade de ativos dessa equipe
-            max_ativos_por_base.append((base, equipe, ativos_equipe))
-
-    # Ordenar pela quantidade de ativos (decrescente) para encontrar a base com mais ativos
-    base_1_info = sorted(max_ativos_por_base, key=lambda x: x[2], reverse=True)[0]  # Base com mais ativos
-    base_1, equipe_1, _ = base_1_info
-
-    # 3. Selecionar a base ocupada mais próxima de base_1
-    base_1_coords = coords_bases.loc[base_1, ['latitude_base', 'longitude_base']].values
-
-    # Calcular distâncias de todas as bases ocupadas (exceto base_1) para base_1
-    distancias = []
-    for base in bases_ocupadas:
-        if base == base_1:  # Ignorar base_1
-            continue
-        base_coords = coords_bases.loc[base, ['latitude_base', 'longitude_base']].values
-        distancia = np.linalg.norm(base_1_coords - base_coords)  # Distância euclidiana
-        distancias.append((base, distancia))
-
-    # Selecionar a base ocupada mais próxima
-    base_2 = sorted(distancias, key=lambda x: x[1])[0][0]
-
-    # 4. Selecionar os ativos mais próximos da base_2
-    ativos_base_1 = np.where(new_solution['x'][:, base_1] == 1)[0]  # Ativos na base_1
-    distancias_base_receber = dist_bases_ativos[ativos_base_1, base_2]  # Distâncias dos ativos a base_2
-    ativos_proximos = np.argsort(distancias_base_receber)[:3]  # Selecionar 3 ativos mais próximos
-
-    # 5. Selecionar aleatoriamente 1 ativo entre os 3 selecionados
-    if len(ativos_proximos) > 0:
-        ativo_selecionado = np.random.choice(ativos_proximos)
-    else:
-        print("Nenhum ativo próximo disponível.")
+    if ativo_selecionado == None:
+        print("ERRO! Não há ativos em base_1.")
         return solution
+    
+    # 4. Selecionar a base ocupada (exceto base_1) mais próxima de ativo_selecionado
+    bases_ocupadas_menos_base1 = np.setdiff1d(bases_ocupadas, [base_1])
+    distancias_para_bases = dist_bases_ativos[ativo_selecionado, bases_ocupadas_menos_base1]
 
-    # 6. Alterar a alocação do ativo e da equipe
+    # Encontrar o índice da base mais próxima do ativo selecionado
+    base_ocupada_mais_proxima_idx = np.argmin(distancias_para_bases)
+    base_ocupada_mais_proxima = bases_ocupadas_menos_base1[base_ocupada_mais_proxima_idx]
+
+    # 5. Alterar a alocação do ativo e da equipe
     # Remover o ativo da base de origem
     new_solution['x'][ativo_selecionado, base_1] = 0
     # Atribuir o ativo à nova base (base_2)
-    new_solution['x'][ativo_selecionado, base_2] = 1
+    new_solution['x'][ativo_selecionado, base_ocupada_mais_proxima] = 1
     
     # Alterar a equipe do ativo
     # Verificando se o ativo está alocado a alguma equipe
@@ -70,13 +50,13 @@ def trocar_ativos_entre_bases(solution, dist_bases_ativos, coords_bases):
         return solution
 
     # Caso contrário, atribuir a equipe corretamente
-    equipe_atual = indices_equipes[0]
+    equipe_antiga_ativo_selecionado = indices_equipes[0]
     
     # Remover o ativo da equipe atual
-    new_solution['h'][ativo_selecionado, equipe_atual] = 0
+    new_solution['h'][ativo_selecionado, equipe_antiga_ativo_selecionado] = 0
     # Atribuir o ativo à nova equipe da base_2
-    nova_equipe = np.random.choice(np.where(new_solution['y'][base_2, :] == 1)[0])  # Equipe alocada à base_2
-    new_solution['h'][ativo_selecionado, nova_equipe] = 1
+    nova_equipe_ativo_selecionado = np.random.choice(np.where(new_solution['y'][base_ocupada_mais_proxima, :] == 1)[0]) 
+    new_solution['h'][ativo_selecionado, nova_equipe_ativo_selecionado] = 1
 
     # Retornar a nova solução com a troca realizada
     return new_solution
