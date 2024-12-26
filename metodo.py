@@ -136,6 +136,8 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
             solution = copy.deepcopy(new_solution)
             print(f"new_solution['fitness']: {solution['fitness']}")
             print(f"new_solution['penalty']: {solution['penalty']}")
+
+            print(f"Equipe1: {np.sum(solution['h'][:,0])}\nEquipe2: {np.sum(solution['h'][:,1])}\nEquipe3: {np.sum(solution['h'][:,2])}\n")
             
         neighborhood += 1
     print("\n----------------------------------------------------------\n")
