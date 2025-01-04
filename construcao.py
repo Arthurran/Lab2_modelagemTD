@@ -189,7 +189,7 @@ def solucao_inicial3(solution, distancia_bases_ativos, prob_ativos):
     dist_bases_ocupadas_com_index = np.hstack((rows_indices, distancias_bases_ocupadas))
 
     # Atribui ativos às bases (1 base por vez) até todos as bases possuírem o mínimo de ativos (30 para eta=0.7)
-    while dist_bases_ocupadas_com_index.shape[0] > (num_ativos-((math.ceil(eta * (num_ativos / num_equipes))*num_equipes))-12):
+    while dist_bases_ocupadas_com_index.shape[0] > (num_ativos-((math.ceil(eta * (num_ativos / num_equipes))*num_equipes))-8):
         for base_index in range(1, dist_bases_ocupadas_com_index.shape[1]):  # Start from the second column
 
             # Check if the matrix becomes empty

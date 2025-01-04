@@ -128,7 +128,7 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
         # Avaliar a solução
         objective_function(new_solution, constraints, dist_bases_ativos, prob_ativos)
 
-        # Compara a solução nova com a atual com as soluções da vizinhança
+        # Compara a solução nova com a atual com as soluções da vizinhança      
         if solution_check(new_solution, solution):
             print(f'Estrutura de vizinhanca: {neighborhood}')
             print(f"solution['fitness']: {solution['fitness']}")
