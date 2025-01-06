@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import random
 import math
+import globals
 
 # # Define os parâmetros do problema
 num_ativos = 125

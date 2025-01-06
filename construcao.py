@@ -51,8 +51,8 @@ def generate_solution(distancia_bases_ativos, prob_ativos):
         'h':np.zeros((num_ativos, num_equipes)), # ativo "i" mantido por equipe "k"
         'penalty': np.zeros(0), # Armazena a penalidade da solução
         'fitness': np.zeros(0), # Armazena o ajuste da solução
-        'penalty_fitness': np.zeros(0), # Armazena o ajuste somado a penalidade da solução
-        'balanceamento_equipes':np.zeros(0) #Armazena o balanceamento entre as equipes
+        'distancias': np.zeros(0), # Armazena o ajuste somado a penalidade da solução
+        'distancias_ponderadas':np.zeros(0) #Armazena o balanceamento entre as equipes
     }
 
     if prob_ativos is not None:

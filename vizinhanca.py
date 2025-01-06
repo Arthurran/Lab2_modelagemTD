@@ -456,4 +456,14 @@ def neighborhood_change(solution,obj_function,neighborhood,dist_bases_ativos,pro
                 return swap_ativos_bases_f2(solution,dist_bases_ativos,prob_ativos)
             case 2:
                 return trocar_equipes_de_bases_f2(solution,dist_bases_ativos,prob_ativos)
-    
+            
+    elif obj_function == 3:
+        match neighborhood:
+            case 1:
+                return swap_ativos_bases_f2(solution,dist_bases_ativos,prob_ativos)
+            case 2:
+                return trocar_equipes_de_bases2(solution,dist_bases_ativos)
+            case 3:
+                return swap_ativos_entre_bases(solution,dist_bases_ativos)
+            case 4:
+                return trocar_equipes_de_bases_f2(solution,dist_bases_ativos,prob_ativos)

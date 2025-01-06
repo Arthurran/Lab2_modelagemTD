@@ -20,6 +20,40 @@ def plot_progress(progress, i):
     # Mostrar o gráfico
     plt.show()
 
+def plot_pareto_fronts(pareto_data, title):
+    """
+    Plota as fronteiras de Pareto para as soluções fornecidas.
+    
+    Parâmetros:
+    - pareto_data: lista de listas de tuplas [(x, y)], onde cada lista representa uma fronteira.
+    - title: título do gráfico.
+    """
+    # Verificar se os dados estão no formato correto
+    if not all(isinstance(front, list) and all(isinstance(point, tuple) and len(point) == 2 for point in front) for front in pareto_data):
+        raise ValueError("Os dados devem ser uma lista de listas de tuplas [(x, y)].")
+    
+    plt.figure(figsize=(10, 6))
+
+    # Iterar sobre cada fronteira de Pareto e plotá-la
+    for idx, front in enumerate(pareto_data):
+        # Ordenar os pontos em cada fronteira pelo eixo X (quantidade de PAs ou distância, dependendo do problema)
+        front_sorted = sorted(front, key=lambda t: t[0])
+        x_values = [point[0] for point in front_sorted]
+        y_values = [point[1] for point in front_sorted]
+
+        # Plotar cada fronteira com um estilo diferente
+        plt.plot(x_values, y_values, marker='o', linestyle='-', label=f'Fronteira {idx + 1}')
+
+    # Personalização do gráfico
+    plt.title(title, fontsize=14)
+    plt.xlabel('Distâncias', fontsize=12)
+    plt.ylabel('Distâncias Ponderadas', fontsize=12)
+    plt.grid(True)
+    plt.legend(fontsize=12)
+
+    # Mostrar o gráfico
+    plt.show()
+
 def cor_vibrante():
     # Gerar valores RGB mais vibrantes
     r = random.randint(180, 255)  # Valor de vermelho entre 180 e 255
