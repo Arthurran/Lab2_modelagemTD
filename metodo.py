@@ -101,13 +101,13 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
     #Leitura das probabilidades
     prob_ativos = (pd.read_excel('probfalhaativos.xlsx',header=None)).to_numpy()
 
-    """
     obj_function = 0
     if objective_function == objective_function_1:
+        print("FUNÇÃO OBJETIVO 1")
         obj_function = 1
     elif objective_function == objective_function_2:
+        print("FUNÇÃO OBJETIVO 2")
         obj_function = 2
-    """
 
     solution = construcao.generate_solution(dist_bases_ativos, prob_ativos)
 
@@ -123,7 +123,7 @@ def bvns_method(objective_function, constraints, max_iter=1000, neighborhood_max
 
       while neighborhood <= neighborhood_max:
 
-        new_solution = neighborhood_change(solution, neighborhood, dist_bases_ativos, coords_bases)
+        new_solution = neighborhood_change(solution, obj_function, neighborhood, dist_bases_ativos, prob_ativos)
 
         # Avaliar a solução
         objective_function(new_solution, constraints, dist_bases_ativos, prob_ativos)
