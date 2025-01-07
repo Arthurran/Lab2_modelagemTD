@@ -1,6 +1,6 @@
 from libs import *
 import metodo 
-from restricoes import constraints
+from restricoes import constraints, multiconstraints
 from metodo import objective_function_1, objective_function_2, objective_function_weighted_sum
 from plot import plot_progress, plot_pareto_fronts, plot_solution
 
@@ -39,7 +39,7 @@ def minimos_maximos (solution_1, solution_2):
 
 def change_alpha (new_alpha):
     globals.alpha = new_alpha
-
+"""
 # SOMA PONDERADA 
 result_w = []
 progress_w = {}
@@ -52,26 +52,28 @@ for i in range(0,10):
     new_alpha = new_alpha + 0.1
     result_w.append(best_solution_w[i]['fitness'])
     #plot_solution(best_solution_w[i])
-
 """
+
 # e-Restrito
 result_e = []
 progress_e = {}
 best_solution_e = {}
 
 new_alpha = 0.1
-for i in range(9): 
+for i in range(0,10): 
     change_alpha(new_alpha)
-    best_solution_e[i], progress_e[i] = metodo.bvns_method(objective_function_2, multiconstraints)
+    best_solution_e[i], progress_e[i] = metodo.bvns_method(objective_function_1, multiconstraints)
     new_alpha = new_alpha + 0.1
     result_e.append(best_solution_e[i]['fitness'])
     #plot_solution(best_solution_e[i])
 
-"""
+
 # PLOT DE FRONTEIRAS PARETO
 pareto_fronts_weighted_sum = []  # Armazena as 10 fronteiras de Pareto de soma ponderada
 pareto_fronts_e_restrito = []  # Armazena as 10 fronteiras de Pareto de e-restrito  
 
+"""
+#PLOT DE SOMA PONDERADA
 for i in range(0,10):
     print("\n--------------------------------")
     print(f"{i}\nbest_solution_w['fitness']: {best_solution_w[i]['fitness']}")
@@ -80,7 +82,20 @@ for i in range(0,10):
     print(f"best_solution_w['penalty']: {best_solution_w[i]['penalty']}")
     # Adiciona todas as tuplas diretamente à lista principal
     pareto_fronts_weighted_sum.append((best_solution_w[i]['distancias'], best_solution_w[i]['distancias_ponderadas']))
+"""
+virtual_alpha = 0.1
+#PLOT DE E-RESTRITO
+for i in range(0,10):
+    epsilon_2 = globals.min_val2 + virtual_alpha * (globals.max_val2 - globals.min_val2)
+    print("\n--------------------------------")
+    print(f"{i}\nbest_solution_e['fitness']: {best_solution_e[i]['fitness']}")
+    print(f"best_solution_e['distancias']: {best_solution_e[i]['distancias']}")
+    print(f"best_solution_e['distancias_ponderadas']: {best_solution_e[i]['distancias_ponderadas']}")
+    print(f"best_solution_e['penalty']: {best_solution_e[i]['penalty']}")
+    # Adiciona todas as tuplas diretamente à lista principal
+    pareto_fronts_e_restrito.append((best_solution_e[i]['distancias'], epsilon_2))
+    virtual_alpha = virtual_alpha + 0.1
 
 # Plotar as fronteiras de Pareto
-plot_pareto_fronts([pareto_fronts_weighted_sum], "Fronteiras de Pareto - Soma Ponderada")
-#plot_pareto_fronts([pareto_fronts_e_restrito], "Fronteiras de Pareto - e-Restrito")
+#plot_pareto_fronts([pareto_fronts_weighted_sum], "Fronteiras de Pareto - Soma Ponderada")
+plot_pareto_fronts([pareto_fronts_e_restrito], "Fronteiras de Pareto - e-Restrito")

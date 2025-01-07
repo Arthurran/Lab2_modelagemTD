@@ -29,7 +29,7 @@ def objective_function_1(solution, constraints, dist_bases_ativos, prob_ativos):
     solution['distancias'] = soma_ativos_a_bases
 
     # Calculo das penalidades
-    solution['penalty'] = penalty_method(solution, constraints)
+    solution['penalty'] = penalty_method(solution, constraints, dist_bases_ativos, prob_ativos)
 
     # Aplicação das penalidades
     solution['penalty_fitness'] = solution['penalty'] + solution['fitness']
@@ -54,7 +54,7 @@ def objective_function_2(solution, constraints, dist_bases_ativos, prob_ativos):
     solution['fitness'] = soma_distancia_probabilidade
     solution['distancias_ponderadas'] = soma_distancia_probabilidade
 
-    solution['penalty'] = penalty_method(solution, constraints)
+    solution['penalty'] = penalty_method(solution, constraints, dist_bases_ativos, prob_ativos)
 
     # Aplicação das penalidades
     solution['penalty_fitness'] = solution['penalty'] + solution['fitness']
@@ -108,7 +108,7 @@ def objective_function_weighted_sum(solution, constraints, dist_bases_ativos, pr
     solution['fitness'] = (globals.alpha * Funcao_1_Norm) + ((1 - globals.alpha) * Funcao_2_Norm)
 
     # Cálculo da penalidade com sua implementação existente
-    solution['penalty'] = penalty_method(solution, constraints)
+    solution['penalty'] = penalty_method(solution, constraints, dist_bases_ativos, prob_ativos)
 
     # Aplicação das penalidades
     solution['penalty_fitness'] = solution['penalty'] + solution['fitness']
@@ -116,11 +116,11 @@ def objective_function_weighted_sum(solution, constraints, dist_bases_ativos, pr
     return solution
 
 # Aplicar as penalidades para as violações de restrições
-def penalty_method(solution, constraints):
+def penalty_method(solution, constraints, dist_bases_ativos, prob_ativos):
     penalty = 0
     iterador = 1
     for constraint in constraints:
-      if not constraint(solution):
+      if not constraint(solution, dist_bases_ativos, prob_ativos):
         #print(f"Contraint problematica: {iterador}")
         penalty += 1
       iterador += 1
