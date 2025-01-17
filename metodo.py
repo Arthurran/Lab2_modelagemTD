@@ -162,13 +162,13 @@ def bvns_method(objective_function, constraints, max_iter=500, neighborhood_max 
 
     obj_function = 0
     if objective_function == objective_function_1:
-        print("FUNÇÃO OBJETIVO 1")
+        # print("FUNÇÃO OBJETIVO 1")
         obj_function = 1
     elif objective_function == objective_function_2:
-        print("FUNÇÃO OBJETIVO 2")
+        # print("FUNÇÃO OBJETIVO 2")
         obj_function = 2
     elif objective_function == objective_function_weighted_sum:
-        print("OTIMIZAÇÃO MULTIOBJETIVO: SOMA PONDERADA")
+        # print("OTIMIZAÇÃO MULTIOBJETIVO: SOMA PONDERADA")
         obj_function = 3
         neighborhood_max = 4
 
@@ -193,17 +193,17 @@ def bvns_method(objective_function, constraints, max_iter=500, neighborhood_max 
 
         # Compara a solução nova com a atual com as soluções da vizinhança      
         if solution_check(new_solution, solution):
-            print(f'Estrutura de vizinhanca: {neighborhood}')
-            print(f"solution['fitness']: {solution['fitness']}")
-            print(f"solution['penalty']: {solution['penalty']}")
+            # print(f'Estrutura de vizinhanca: {neighborhood}')
+            # print(f"solution['fitness']: {solution['fitness']}")
+            # print(f"solution['penalty']: {solution['penalty']}")
             solution = copy.deepcopy(new_solution)
-            print(f"new_solution['fitness']: {solution['fitness']}")
-            print(f"new_solution['penalty']: {solution['penalty']}")
+            # print(f"new_solution['fitness']: {solution['fitness']}")
+            # print(f"new_solution['penalty']: {solution['penalty']}")
 
-            print(f"Equipe1: {np.sum(solution['h'][:,0])}\nEquipe2: {np.sum(solution['h'][:,1])}\nEquipe3: {np.sum(solution['h'][:,2])}\n")
+            # print(f"Equipe1: {np.sum(solution['h'][:,0])}\nEquipe2: {np.sum(solution['h'][:,1])}\nEquipe3: {np.sum(solution['h'][:,2])}\n")
             
         neighborhood += 1
-    print("\n----------------------------------------------------------\n")
+    # print("\n----------------------------------------------------------\n")
     
     #plot.plot_solution(solution, coords_bases, coords_ativos)
     return solution, progress

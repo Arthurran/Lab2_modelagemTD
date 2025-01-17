@@ -40,7 +40,7 @@ def read_geolocation_data():
 
 # Função para gerar uma solução base
 def generate_solution(distancia_bases_ativos, prob_ativos):
-    print("Gerar solucao")
+    # print("Gerar solucao")
     # Inicialize as variáveis de decisão
     # 'distancias_bases_ativos':np.zeros((num_ativos, num_bases)) # armazena as distâncias dos ativos "i" às bases "j"
     # distancias_bases_ativos pode ser fixo, de modo a ser utilizado apenas para consulta das distâncias
@@ -158,7 +158,7 @@ def solucao_inicial2(solution, distancia_bases_ativos, prob_ativos):
     return solution
 
 def solucao_inicial3(solution, distancia_bases_ativos, prob_ativos):
-    print("SOLUÇÃO INICIAL3")
+    # print("SOLUÇÃO INICIAL3")
 
     #(1) Calcular a soma das distâncias para os 15 ativos mais próximos de cada base
     soma_distancias_bases = []
@@ -236,5 +236,5 @@ def solucao_inicial3(solution, distancia_bases_ativos, prob_ativos):
         # Delete the corresponding row from the matrix (now the matrix is updating)
         dist_bases_ocupadas_com_index = np.delete(dist_bases_ocupadas_com_index, 0, axis=0)
 
-    print("Solução inicial gerada com sucesso.")
+    # print("Solução inicial gerada com sucesso.")
     return solution
