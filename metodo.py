@@ -4,7 +4,7 @@ import plot
 from vizinhanca import neighborhood_change 
 import globals
 
-# Função objetivo 1: Minimizar distâncias 
+# Função objetivo 1: Minimizar pico de fila
 def objective_function_1(solution, constraints, dist_bases_ativos, prob_ativos):
 
     solution['fitness'] = 0
@@ -34,7 +34,7 @@ def objective_function_1(solution, constraints, dist_bases_ativos, prob_ativos):
     # Aplicação das penalidades
     solution['penalty_fitness'] = solution['penalty'] + solution['fitness']
 
-#dist_bases_ativos não deve mais ser chamada mas sim a probabilidade de falha de cada ativo  
+# Minimizar tempo de ociosidade
 def objective_function_2(solution, constraints, dist_bases_ativos, prob_ativos):
     solution['fitness'] = 0
     solution['penalty'] = 0
